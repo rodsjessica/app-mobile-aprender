@@ -1,0 +1,22 @@
+export const dataOffice = [
+    { key: 'Analista', value: 'Analista' },
+    { key: 'Assistente', value: 'Assistente' },
+    { key: 'Auxiliar', value: 'Auxiliar' },
+    { key: 'Aprendiz', value: 'Aprendiz' },
+    { key: 'Agendador', value: 'Agendador' },
+    { key: 'Coordenador', value: 'Coordenador' },
+    { key: 'Consultor Técnico', value: 'Consultor Técnico' },
+    { key: 'Comprador', value: 'Comprador' },
+    { key: 'Diretor', value: 'Diretor' },
+    { key: 'Entregador', value: 'Entregador' },
+    { key: 'Encarregado', value: 'Encarregado' },
+    { key: 'F&I', value: 'F&I' },
+    { key: 'Gerente', value: 'Gerente' },
+    { key: 'Garantista', value: 'Garantista' },
+    { key: 'Mecânico', value: 'Mecânico' },
+    { key: 'Recepcionista', value: 'Recepcionista' },
+    { key: 'Supervisor', value: 'Supervisor' },
+    { key: 'Telefonista', value: 'Telefonista' },
+    { key: 'Vendedor', value: 'Vendedor' },
+    { key: 'Outros', value: 'Outros' }
+];

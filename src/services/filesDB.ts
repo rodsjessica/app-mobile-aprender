@@ -1,0 +1,1 @@
+export const urlFilesDB = 'https://www.universidadefenabrave.com.br/EAD/FilesDB';

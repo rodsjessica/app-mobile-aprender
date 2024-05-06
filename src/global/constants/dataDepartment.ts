@@ -1,0 +1,16 @@
+export const dataDepartment = [
+    { key: 'Administrativo', value: 'Administrativo' },
+    { key: 'CRM', value: 'CRM' },
+    { key: 'Consórcio', value: 'Consórcio' },
+    { key: 'Diretoria', value: 'Diretoria' },
+    { key: 'Financeiro', value: 'Financeiro' },
+    { key: 'Marketing', value: 'Marketing' },
+    { key: 'Oficina / Peças', value: 'Oficina / Peças' },
+    { key: 'Pós-vendas', value: 'Pós-vendas' },
+    { key: 'Qualidade', value: 'Qualidade' },
+    { key: 'RH / DP', value: 'RH / DP' },
+    { key: 'Recepção', value: 'Recepção' },
+    { key: 'TI', value: 'TI' },
+    { key: 'Vendas', value: 'Vendas' },
+    { key: 'Outros', value: 'Outros' },
+]
