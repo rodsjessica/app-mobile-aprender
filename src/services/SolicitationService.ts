@@ -4,7 +4,7 @@ import { IProps } from "../screens/Solicitation";
 
 async function getSolicitation(token: string, page: number, limit: number): Promise<IProps>{
 
-    const response = api.get<IProps>(`Solicitacao/SolicitacaoApp?token=${token}&pagina=${page}&limite=${limit}`)
+    const response = api.get<IProps>(`ENDPOINTS?token=${token}&pagina=${page}&limite=${limit}`)
     .then(async (response) => {
         return response.data;
 

@@ -41,7 +41,7 @@ export function AllCourses() {
                 <CardCourses
                     course={item.titulo}
                     infoCourse={item.descricao.replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<b>", "").replaceAll("</b>", "").replace("<i>", "").replace("</i>", "").replace("<div>", "").replace("</div>", "")}
-                    image={`https://www.universidadefenabrave.com.br/EAD/FilesDB/${item.imagem}`}
+                    image={`BASE_URL/EAD/FilesDB/${item.imagem}`}
                     category={item.categoria}
                     codCategory={item.codCategoria}
                     colorCategory={item.categoriaCor}
@@ -75,7 +75,7 @@ export function AllCourses() {
                 <CardCourses
                     course={item.titulo}
                     infoCourse={item.descricao.replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<b>", "").replaceAll("</b>", "").replace("<i>", "").replace("</i>", "").replace("<div>", "").replace("</div>", "")}
-                    image={`https://www.universidadefenabrave.com.br/EAD/FilesDB/${item.imagem}`}
+                    image={`BASE_URL/EAD/FilesDB/${item.imagem}`}
                     category={item.categoria}
                     codCategory={item.codCategoria}
                     colorCategory={item.categoriaCor}

@@ -5,7 +5,7 @@ import { IUpdateStudent } from "../screens/Profile";
 
 async function postUpdateStudent(data: any): Promise<IUpdateStudent> {
 
-    const response = api.post<IUpdateStudent>(`Autenticacao/atualizarAluno`, data)
+    const response = api.post<IUpdateStudent>(`ENDPOINTS`, data)
     .then(async (response) => {
         return response.data;
 

@@ -5,7 +5,7 @@ import { IChangePassword } from "../screens/Profile";
 
 async function postChangePassword(token: string, newPassword: string): Promise<IChangePassword> {
 
-    const response = api.post<IChangePassword>(`Autenticacao/alterarSenha?token=${token}&novaSenha=${newPassword}`)
+    const response = api.post<IChangePassword>(`ENDPOINTS?token=${token}&novaSenha=${newPassword}`)
     .then(async (response) => {
         return response.data;
 

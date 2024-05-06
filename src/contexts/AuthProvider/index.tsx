@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
   async function loadForStorage() {
     try {
 
-      const authstorage = await AsyncStorage.getItem('@universidadeFenabrave:auth');
+      const authstorage = await AsyncStorage.getItem('@aprender:auth');
 
       if(authstorage){
         const authData : IAuth = JSON.parse(authstorage);
@@ -67,7 +67,7 @@ export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
     if(resp.message === 'Sucesso na requisição') {
       setAuth(resp);
 
-      AsyncStorage.setItem('@universidadeFenabrave:auth', JSON.stringify(resp))
+      AsyncStorage.setItem('@aprender:auth', JSON.stringify(resp))
 
     } else if(username === '' && password === '') {
       Toast.show({
@@ -101,7 +101,7 @@ export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
   async function signOut():Promise<void>{
     setAuth(undefined);
 
-    AsyncStorage.removeItem('@universidadeFenabrave:auth');
+    AsyncStorage.removeItem('@aprender:auth');
 
     return;
   }

@@ -1,1 +1,1 @@
-export const urlFilesDB = 'https://www.universidadefenabrave.com.br/EAD/FilesDB';
+export const urlFilesDB = 'BASE_URL/EAD/FilesDB';

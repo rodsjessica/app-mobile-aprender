@@ -5,7 +5,7 @@ import { IDataCourseHome } from "../contexts/CourseProvider";
 
 async function getCourseHome(token : any) :Promise<IDataCourseHome> {
 
-  const response = await  api.get<IDataCourseHome>(`Curso/Home?token=${token}`)
+  const response = await  api.get<IDataCourseHome>(`ENDPOINTS?token=${token}`)
   .then(async (response) => {
     const resp = response.data
 

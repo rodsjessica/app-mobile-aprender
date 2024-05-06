@@ -5,7 +5,7 @@ import { IReturnCompany } from "../screens/Profile";
 
 async function getReturnCompany(token: string): Promise<IReturnCompany> {
 
-    const response = api.post<IReturnCompany>(`Autenticacao/retornarEmpresa?token=${token}`)
+    const response = api.post<IReturnCompany>(`ENDPOINTS?token=${token}`)
     .then(async (response) => {
         return response.data;
 

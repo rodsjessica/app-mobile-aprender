@@ -36,7 +36,7 @@ export function PodCast({ titleCourse, contentPodcast }: IProps) {
             <ContentPlayerAudio renderToHardwareTextureAndroid={true}>
                 <WebView
                     source={{
-                        uri: `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${contentPodcast}&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`,
+                        uri: `BASE_URL/${contentPodcast}`,
                         headers: {
                           "Content-Type": "application/json; charset=utf-8",
                         },

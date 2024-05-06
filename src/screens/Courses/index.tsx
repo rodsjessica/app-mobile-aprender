@@ -9,7 +9,7 @@ import { Container } from './styles';
 // import { useAuth } from '../../contexts/AuthProvider';
 
 let url = '';
-let urlInitial = 'https://www.universidadefenabrave.com.br/restrito/v3/Curso/MeusCursos';
+let urlInitial = 'BASE_URL/Curso/MeusCursos';
 
 export function Courses() {
   // const { auth } = useAuth();

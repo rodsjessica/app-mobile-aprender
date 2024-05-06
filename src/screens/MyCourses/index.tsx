@@ -24,7 +24,7 @@ export function MyCourses() {
         
         return (
             <CardMyCourses
-                image={`https://www.universidadefenabrave.com.br/EAD/FilesDB/${item.imagem}`}
+                image={`BASE_URL/EAD/FilesDB/${item.imagem}`}
                 title={item.titulo}
                 data={moment(item.matriculadoEm).format('DD/MM/YYYY')}
                 time={item.diasDisponivel}

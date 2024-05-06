@@ -73,9 +73,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "br.com.universidadefenabrave.app"
+    namespace "com.app.aprender"
     defaultConfig {
-        applicationId "br.com.universidadefenabrave.app"
+        applicationId "com.app.aprender"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 4

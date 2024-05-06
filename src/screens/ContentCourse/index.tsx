@@ -285,11 +285,6 @@ export function ContentCourse({ route }: any) {
                         ainda mais os assuntos abordados.
                         {"\n"}
                         {"\n"}
-                        O curso também está disponível no aplicativo
-                        da Universidade Web Fenabrave: tudo na
-                        palma da mão.
-                        {"\n"}
-                        {"\n"}
                         Bom estudo!
                         {"\n"}
                     </Description>

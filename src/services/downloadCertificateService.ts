@@ -5,7 +5,7 @@ import { IProps } from "../screens/ContentCourse";
 
 async function getDataCertificate(token: string, codCourse: string): Promise<IProps> {
 
-    const response = api.get<IProps>(`Curso/baixarCertificado?token=${token}&codCurso=${codCourse}`)
+    const response = api.get<IProps>(`ENDPOINTS?token=${token}&codCurso=${codCourse}`)
     .then(async (response) => {
         return response.data;
 

@@ -5,7 +5,7 @@ import api from "./config/api";
 async function getDataUser (username: string, password: string):Promise<IAuth>{
 
   const response = await api.post<IAuth>(
-    'Autenticacao',
+    'ENDPOINTS',
     {
       usuario: username,
       senha: password,

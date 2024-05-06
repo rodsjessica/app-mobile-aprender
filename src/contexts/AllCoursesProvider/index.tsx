@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { CourseStudentService } from "../../services/courseStudentService";
+import { courseStudentService } from "../../services/courseStudentService";
 
 export interface IDataLista {
     aprovadoEm: boolean;
@@ -56,7 +56,7 @@ export const AllCoursesProvider: React.FC<IAllCoursesProvider> = ({ children }) 
 
     async function getData(token: any, page: number, limit: number): Promise <IProps> {
 
-        const resp = await CourseStudentService.getCourseStudent(token, page, limit);
+        const resp = await courseStudentService.getCourseStudent(token, page, limit);
 
         // if(resp.message === 'Consulta realizada'){
         //     setData(resp);

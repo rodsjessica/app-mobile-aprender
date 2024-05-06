@@ -27,7 +27,7 @@ export function Login() {
     }
 
     function handlePrivacyPolicy() {
-        Linking.openURL('http://www.fenabrave.org.br/politica-de-privacidade.html');
+        Linking.openURL('https://www.google.com.br/');
     }
 
     return (
@@ -105,8 +105,8 @@ export function Login() {
                         >
                             <S.ModalView>
                                 <S.ModalSubtitle>Por gentileza, entrar em contato com a Universidade.</S.ModalSubtitle>
-                                <S.ModalInfo>Tel: 11 5582-0063</S.ModalInfo>
-                                <S.ModalInfo>Tel: 11 5582-0045</S.ModalInfo>
+                                <S.ModalInfo>Tel: 11 5555-5555</S.ModalInfo>
+                                <S.ModalInfo>Tel: 11 5555-5555</S.ModalInfo>
                             </S.ModalView>
                         </Modalize>
                     </>
