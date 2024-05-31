@@ -5,6 +5,4 @@ export const Container = styled.View`
  background-color: ${({theme} : any) => theme.colors.gray_light};
 `;
 
-export const ContentView = styled.View`
-  flex: 1;
-`;
+export const ContentView = styled.View``;

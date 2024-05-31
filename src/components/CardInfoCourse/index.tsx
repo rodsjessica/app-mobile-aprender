@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
     Container,
@@ -6,6 +6,8 @@ import {
     Title,
     ContentDesc,
     Description,
+    ButtonSeeMore,
+    TextSeeMore,
     ContentType,
     Content,
     Info,
@@ -30,13 +32,26 @@ export interface IProps {
 }
 
 export function CardInfoCourse({ title, description, category, time, teacher }: IProps) {
+    const [showMore, setShowMore] = useState(true);
+    const [visibleBtn, setVisibleBtn] = useState(true);
+
     return (
         <Container>
             <ContentTitle>
-                <Title numberOfLines={2}>{title}</Title>
+                <Title>{title}</Title>
             </ContentTitle>
             <ContentDesc>
-                <Description numberOfLines={4}>{description}</Description>
+                {
+                    showMore && description?.length > 120 ?
+                        <>
+                            <Description numberOfLines={4}>{description}</Description>
+                            <ButtonSeeMore onPress={() => setShowMore(!showMore)}>
+                                <TextSeeMore>Ler mais</TextSeeMore>
+                            </ButtonSeeMore>
+                        </>
+                        :
+                        <Description>{description}</Description>
+                }
             </ContentDesc>
             <ContentType>
                 <Content>

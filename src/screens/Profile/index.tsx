@@ -182,16 +182,16 @@ export function Profile() {
 
     async function postUpdateRegister() {
 
-        if(infoOffice === ""){
-            
+        if (infoOffice === "") {
+
             return showMessage({
                 message: "Por favor, preencha o campo vazio.",
                 type: "danger",
             });
         }
 
-        if(infoDepartment === ""){
-            
+        if (infoDepartment === "") {
+
             return showMessage({
                 message: "Por favor, preencha o campo vazio.",
                 type: "danger",
@@ -206,8 +206,8 @@ export function Profile() {
             "escolaridade": Number(selectedLevelEducation),
             "cargo": infoOffice,
             "departamento": infoDepartment
-        } 
-        
+        }
+
         const resp = await updateStudentService.postUpdateStudent(body)
 
         setModalVisible(true)
@@ -227,7 +227,7 @@ export function Profile() {
     }
 
     const childToParent = (click: boolean) => {
-        navigation.navigate('Home');
+        navigation.navigate('Lançamentos');
     }
 
     const handleVisibleInfo = (key: any) => {
@@ -240,9 +240,9 @@ export function Profile() {
 
     //========================== functions dropdown select ===================================
 
-    const selectedOffice = (key : any) => {
+    const selectedOffice = (key: any) => {
 
-        if(key === "Outros"){
+        if (key === "Outros") {
             setInfoOffice("")
         } else {
             setInfoOffice(key)
@@ -251,12 +251,12 @@ export function Profile() {
     }
 
     const selectedDepartment = (key: any) => {
-        if(key === "Outros"){
+        if (key === "Outros") {
             setInfoDepartment("")
         } else {
             setInfoDepartment(key)
         }
-  
+
         setDepartmentSelected(key)
     }
 
@@ -313,122 +313,138 @@ export function Profile() {
                         touchToClose={touchToClose} />
                 }
                 <HeaderProfile>
-                    <ContentViewLetter>
-                        <ContentLetter>{letter}</ContentLetter>
-                    </ContentViewLetter>
-                    <ContentViewInfo>
-                        <ContentName>{data?.nome}</ContentName>
-                        <ContentEmail>{data?.email}</ContentEmail>
-                        <ContentInfo>Aluno(a) desde: <ContentData>{moment(data?.criadoEm).format('DD/MM/YYYY')}</ContentData></ContentInfo>
-                        <ContentLevelEducation>{
-                            valueLevelEducation === undefined ? <ContentView><Loading /></ContentView> : valueLevelEducation.value
-                        }</ContentLevelEducation>
-                    </ContentViewInfo>
+                    {
+                        data === undefined || valueLevelEducation === undefined ?
+                            <ContentView>
+                                <Loading />
+                            </ContentView>
+                            :
+                            <>
+                                <ContentViewLetter>
+                                    <ContentLetter>{letter}</ContentLetter>
+                                </ContentViewLetter>
+                                <ContentViewInfo>
+                                    <ContentName>{data?.nome}</ContentName>
+                                    <ContentEmail>{data?.email}</ContentEmail>
+                                    <ContentInfo>Aluno(a) desde: <ContentData>{moment(data?.criadoEm).format('DD/MM/YYYY')}</ContentData></ContentInfo>
+                                    <ContentLevelEducation>{valueLevelEducation.value}</ContentLevelEducation>
+                                </ContentViewInfo></>
+
+                    }
                 </HeaderProfile>
                 <ContentScrollView contentContainerStyle={{ paddingBottom: 20 }}>
                     <SeparatorTag info="Informações Complementares" />
-                    <Content>
-                        <InputForm field="Empresa" editable={false} value={company} defaultValue={company}/>
-                    </Content>
-                    <Content>
-                        <InputForm field="CPF" editable={false} value={data?.cpf} defaultValue={data?.cpf} />
-                    </Content>
-                    <Content>
-                        <InputForm field="Data de Nascimento" editable={false} value={moment(data?.nascimento).format('DD/MM/YYYY')} defaultValue={moment(data?.nascimento).format('DD/MM/YYYY')} />
-                    </Content>
-                    <ContentSelectList>
-                        <LabelText>Sexo:</LabelText>
-                        <SelectList
-                            setSelected={(key: any) => setSelectedGender(key)}
-                            data={dataGender}
-                            save="key"
-                            onSelect={() => (selectedGender)}
-                            placeholder="Selecione por categoria"
-                            search={false}
-                            inputStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
-                            boxStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
-                            dropdownStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
-                            dropdownTextStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
-                            defaultOption={valueGender}
-                        />
-                    </ContentSelectList>
-                    <Content>
-                        <InputForm field="DDD" value={ddd} onChangeText={text => setDDD(text)} defaultValue={data?.ddd} />
-                    </Content>
-                    <Content>
-                        <InputForm field="Celular" value={cellPhone} onChangeText={text => setCellPhone(text)} defaultValue={data?.celular} />
-                    </Content>
-                    <ContentSelectList>
-                        <LabelText>Escolaridade:</LabelText>
-                        <SelectList
-                            setSelected={(key: any) => setSelectedLevelEducation(key)}
-                            data={dataLevelEducation}
-                            save="key"
-                            onSelect={() => (selectedLevelEducation)}
-                            placeholder="Selecione por categoria"
-                            search={false}
-                            inputStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
-                            boxStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
-                            dropdownStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
-                            dropdownTextStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
-                            defaultOption={valueLevelEducation}
-                        />
-                    </ContentSelectList>
-                    <Content>
-                        <InputForm field="Data Cadastro" editable={false} value={moment(data?.criadoEm).format('DD/MM/YYYY')} />
-                    </Content>
-                    <ContentSelectList>
-                        <LabelText>Cargo:</LabelText>
-                        <SelectList
-                            setSelected={(key: any) => selectedOffice(key)}
-                            data={dataOffice}
-                            save="key"
-                            onSelect={() => (infoOffice)}
-                            placeholder="Selecione por categoria"
-                            search={false}
-                            inputStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
-                            boxStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
-                            dropdownStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
-                            dropdownTextStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
-                            defaultOption={valueOffice}
-                        />
-                    </ContentSelectList>
                     {
-                        officeSelected === 'Outros' &&
-                        <Content>
-                            <InputForm field="Informe o Cargo:" value={infoOffice} onChangeText={text => setInfoOffice(text)} defaultValue={data?.cargo} />
-                        </Content>
+                        data === undefined ?
+                            <ContentView>
+                                <Loading />
+                            </ContentView>
+                            :
+                            <>
+                                <Content>
+                                    <InputForm field="Empresa" editable={false} value={company} defaultValue={company} />
+                                </Content>
+                                <Content>
+                                    <InputForm field="CPF" editable={false} value={data?.cpf} defaultValue={data?.cpf} />
+                                </Content>
+                                <Content>
+                                    <InputForm field="Data de Nascimento" editable={false} value={moment(data?.nascimento).format('DD/MM/YYYY')} defaultValue={moment(data?.nascimento).format('DD/MM/YYYY')} />
+                                </Content>
+                                <ContentSelectList>
+                                    <LabelText>Sexo:</LabelText>
+                                    <SelectList
+                                        setSelected={(key: any) => setSelectedGender(key)}
+                                        data={dataGender}
+                                        save="key"
+                                        onSelect={() => (selectedGender)}
+                                        placeholder="Selecione por categoria"
+                                        search={false}
+                                        inputStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
+                                        boxStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
+                                        dropdownStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
+                                        dropdownTextStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
+                                        defaultOption={valueGender}
+                                    />
+                                </ContentSelectList>
+                                <Content>
+                                    <InputForm field="DDD" value={ddd} onChangeText={text => setDDD(text)} defaultValue={data?.ddd} maxLength={2}/>
+                                </Content>
+                                <Content>
+                                    <InputForm field="Celular" value={cellPhone} onChangeText={text => setCellPhone(text)} defaultValue={data?.celular} maxLength={9}/>
+                                </Content>
+                                <ContentSelectList>
+                                    <LabelText>Escolaridade:</LabelText>
+                                    <SelectList
+                                        setSelected={(key: any) => setSelectedLevelEducation(key)}
+                                        data={dataLevelEducation}
+                                        save="key"
+                                        onSelect={() => (selectedLevelEducation)}
+                                        placeholder="Selecione por categoria"
+                                        search={false}
+                                        inputStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
+                                        boxStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
+                                        dropdownStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
+                                        dropdownTextStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
+                                        defaultOption={valueLevelEducation}
+                                    />
+                                </ContentSelectList>
+                                <Content>
+                                    <InputForm field="Data Cadastro" editable={false} value={moment(data?.criadoEm).format('DD/MM/YYYY')} />
+                                </Content>
+                                <ContentSelectList>
+                                    <LabelText>Cargo:</LabelText>
+                                    <SelectList
+                                        setSelected={(key: any) => selectedOffice(key)}
+                                        data={dataOffice}
+                                        save="key"
+                                        onSelect={() => (infoOffice)}
+                                        placeholder="Selecione por categoria"
+                                        search={false}
+                                        inputStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
+                                        boxStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
+                                        dropdownStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
+                                        dropdownTextStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
+                                        defaultOption={valueOffice}
+                                    />
+                                </ContentSelectList>
+                                {
+                                    officeSelected === 'Outros' &&
+                                    <Content>
+                                        <InputForm field="Informe o Cargo:" value={infoOffice} onChangeText={text => setInfoOffice(text)} defaultValue={data?.cargo} />
+                                    </Content>
+                                }
+                                <ContentSelectList>
+                                    <LabelText>Departamento:</LabelText>
+                                    <SelectList
+                                        setSelected={(key: any) => selectedDepartment(key)}
+                                        data={dataDepartment}
+                                        save="key"
+                                        onSelect={() => (infoDepartment)}
+                                        placeholder="Selecione por categoria"
+                                        search={false}
+                                        inputStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
+                                        boxStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
+                                        dropdownStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
+                                        dropdownTextStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
+                                        defaultOption={valueDepartment}
+                                    />
+                                </ContentSelectList>
+                                {
+                                    departmentSelected === 'Outros' &&
+                                    <Content>
+                                        <InputForm field="Informe o Departamento:" value={infoDepartment} onChangeText={text => setInfoDepartment(text)} defaultValue={data?.departamento} />
+                                    </Content>
+                                }
+                                <ContentViewButton>
+                                    <Button
+                                        title='Atualizar cadastro'
+                                        color={theme.colors.attention}
+                                        width={250}
+                                        onPress={() => postUpdateRegister()}
+                                    />
+                                </ContentViewButton>
+                            </>
                     }
-                    <ContentSelectList>
-                        <LabelText>Departamento:</LabelText>
-                        <SelectList
-                            setSelected={(key: any) => selectedDepartment(key)}
-                            data={dataDepartment}
-                            save="key"
-                            onSelect={() => (infoDepartment)}
-                            placeholder="Selecione por categoria"
-                            search={false}
-                            inputStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
-                            boxStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
-                            dropdownStyles={{ borderColor: theme.colors.gray, backgroundColor: theme.colors.gray_light }}
-                            dropdownTextStyles={{ fontSize: 16, color: theme.colors.gray_dark }}
-                            defaultOption={valueDepartment}
-                        />
-                    </ContentSelectList>
-                    {
-                        departmentSelected === 'Outros' &&
-                        <Content>
-                            <InputForm field="Informe o Departamento:" value={infoDepartment} onChangeText={text => setInfoDepartment(text)} defaultValue={data?.departamento} />
-                        </Content>
-                    }
-                    <ContentViewButton>
-                        <Button
-                            title='Atualizar cadastro'
-                            color={theme.colors.attention}
-                            width={250}
-                            onPress={() => postUpdateRegister()}
-                        />
-                    </ContentViewButton>
                 </ContentScrollView>
                 <SeparatorTag info="Configurações básicas" />
                 <ContentViewButtonUnderlined>

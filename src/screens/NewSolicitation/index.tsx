@@ -38,10 +38,11 @@ export function NewSolicitation({ route }: any) {
     const [motive, setMotive] = useState('');
 
     const childToParent = (click: boolean) => {
-        navigation.navigate('Home');
+        navigation.navigate('Lançamentos');
     }
 
-    async function postNewSolicitation() {
+    async function postNewSolicitation(motive: any) {
+
         if (motive === '') {
             return showMessage({
                 message: "Por favor, preencha o campo vazio.",
@@ -105,7 +106,7 @@ export function NewSolicitation({ route }: any) {
                         Mínimo de 20 caracteres e máximo 500 caracteres.
                     </InfoText>
                     <ContentButton>
-                        <Button title="Inscreva-se" onPress={() => postNewSolicitation()} width={200} color={theme.colors.success} />
+                        <Button title="Solicitar" onPress={() => postNewSolicitation(motive)} width={200} color={theme.colors.success} />
                     </ContentButton>
                 </ContentView>
             </Container>

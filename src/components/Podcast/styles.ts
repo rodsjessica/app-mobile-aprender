@@ -20,6 +20,8 @@ export const ContentIcon = styled.View`
 
 export const IconImage = styled.Image`
     margin: 10px;
+    width: 34px;
+    height: 42.5px;
 `;
 
 export const ContentTitle = styled.View`

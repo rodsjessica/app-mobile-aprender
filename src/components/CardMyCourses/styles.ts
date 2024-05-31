@@ -6,7 +6,6 @@ export interface CategoryProps {
 }
 
 export const Container = styled.View`
- flex: 1;
  flex-direction: column;
  margin: 10px;
  background-color: ${({ theme }: any) => theme.colors.background};

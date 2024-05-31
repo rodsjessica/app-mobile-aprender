@@ -14,6 +14,7 @@ export const ContentSelect = styled.View`
 `;
 
 export const ContentView = styled.View`
+  flex: 1;
   flex-direction: row;
   justify-content: center;
   align-items: center;

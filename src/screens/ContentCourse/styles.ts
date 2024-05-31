@@ -60,6 +60,8 @@ export const ContentImage = styled.View`
 
 export const IconImage = styled.Image`
     margin: 10px;
+    width: 40px;
+    height: 40px;
 `;
 
 export const ContentVideoTitle = styled.View`

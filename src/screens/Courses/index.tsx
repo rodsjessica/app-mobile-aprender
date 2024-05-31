@@ -12,8 +12,6 @@ let url = '';
 let urlInitial = 'BASE_URL/Curso/MeusCursos';
 
 export function Courses() {
-  // const { auth } = useAuth();
-  // const token = auth?.data.accessToken;
   const [navigation, setNavigation] = useState('');
   const [click, setClick] = useState(false);
   const [webViewCanGoBack, setWebviewCanGoBack] = useState(false);

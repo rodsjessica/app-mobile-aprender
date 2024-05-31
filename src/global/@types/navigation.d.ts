@@ -3,13 +3,14 @@ export declare global {
       interface RootParamList {
         Login: any;
         Courses: any;
-        Home: any;
+        // Home: any;
         Profile: any;
         MyCourses: any;
         Solicitation: any;
         Lançamentos: any;
         ContentCourse: any;
         NewSolicitation: any;
+        Evaluation: any;
       }
     }
   

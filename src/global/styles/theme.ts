@@ -11,6 +11,7 @@ export default {
         gray_dark: '#4D4D4D',
         gray_light: '#F6F6F6',
         gray:'#D3D3D3',
+        blue_light: '#0076CE',
         
     },
     fonts: {

@@ -1,5 +1,10 @@
 import styled from "styled-components/native";
 
+interface IProps {
+    width: any;
+    height: any;
+}
+
 export const Container = styled.View`
     flex-direction: column;
     margin: 20px;
@@ -17,8 +22,10 @@ export const ContentIcon = styled.View`
     margin-right: 15px;
 `;
 
-export const Icon = styled.Image`
+export const Icon = styled.Image<IProps>`
     margin: 10px;
+    width: ${(props: { width: any }) => props.width}px;
+    height: ${(props: { height: any }) => props.height}px;
 `;
 
 export const ContentTitle = styled.View`

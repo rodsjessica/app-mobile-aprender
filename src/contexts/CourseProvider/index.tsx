@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { courseHomeService } from "../../services/courseHomeService";
 
 export interface IData {
@@ -49,8 +49,7 @@ export const CourseHomeContext = createContext<ICourseHomeContext>({} as ICourse
 export const CourseHomeProvider: React.FC<ICourseHomeProvider> = ({ children }) => {
   const [data, setData] = useState<IDataCourseHome>();
 
-  async function getData(token: string): Promise<IDataCourseHome> {
-
+  const getData = useCallback(async (token: string): Promise<IDataCourseHome> => {
     const resp = await courseHomeService.getCourseHome(token);
 
     if (resp.message === "Sucesso na requisição") {
@@ -58,7 +57,7 @@ export const CourseHomeProvider: React.FC<ICourseHomeProvider> = ({ children }) 
     }
 
     return resp;
-  }
+  }, []);
 
 
   return (

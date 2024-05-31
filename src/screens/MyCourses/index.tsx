@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, useCallback, useEffect, useMemo } from "react";
 import { Container, ContentView } from "./styles";
 import { FlatList, ListRenderItemInfo, SafeAreaView, StatusBar } from "react-native";
 
@@ -6,24 +6,51 @@ import { HeaderNavigation } from "../../components/HeaderNavigation";
 import { CardMyCourses } from "../../components/CardMyCourses";
 import { Loading } from "../../components/Loading";
 
-import { IData, useCourseHome } from "../../contexts/CourseProvider";
+
 import theme from "../../global/styles/theme";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 
+import { useAuth } from "../../contexts/AuthProvider";
+import { IData, useCourseHome } from "../../contexts/CourseProvider";
+
+const MemoizedCardMyCourses = memo(CardMyCourses);
 
 export function MyCourses() {
     const navigation = useNavigation();
-    const { data } = useCourseHome();
+    const { auth } = useAuth();
+    const { data, getData } = useCourseHome();
 
-    const childToParent = (click: boolean) => {
+    // Chama getData apenas se o token mudar
+    useEffect(() => {
+        if (auth?.data.token) {
+            getData(auth.data.token);
+        }
+
+    }, [auth?.data.token, getData])
+
+    const childToParent = useCallback(() => {
         navigation.navigate('Lançamentos');
-    }
+    }, [navigation]);
 
-    const renderItem = ({ item }: ListRenderItemInfo<IData>) => {
-        
+    // Memoização dos dados filtrados e ordenados
+    const filteredData = useMemo(() => {
+        if (data?.data) {
+            return data.data
+                .filter((item) => item.matriculado === true)
+                .sort((a, b) => a.matriculadoEm < b.matriculadoEm ? 1 : a.matriculadoEm > b.matriculadoEm ? -1 : 0);
+        }
+        return [];
+    }, [data?.data]);
+
+    // Memoização da keyExtractor
+    const keyExtractor = useCallback((item: IData) => item.titulo, []);
+
+    // Função renderItem memoizada
+    const renderItem = useCallback(({ item }: ListRenderItemInfo<IData>) => {
+
         return (
-            <CardMyCourses
+            <MemoizedCardMyCourses
                 image={`BASE_URL/EAD/FilesDB/${item.imagem}`}
                 title={item.titulo}
                 data={moment(item.matriculadoEm).format('DD/MM/YYYY')}
@@ -32,7 +59,7 @@ export function MyCourses() {
                 colorCategory={item.categoriaCor}
                 clickButton={() => navigation.navigate('ContentCourse', {
                     titulo: item.titulo,
-                    descricao: item.descricao.replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<b>", "").replaceAll("</b>", "").replace("<i>", "").replace("</i>", "").replace("<div>", "").replace("</div>", ""),
+                    descricao: item.descricao.replace(/<[^>]+>/g, ""),
                     categoria: item.categoria,
                     cargaHoraria: item.cargaHoraria,
                     aprovadoEm: item.aprovadoEm,
@@ -41,7 +68,7 @@ export function MyCourses() {
                 })}
             />
         )
-    }
+    }, [navigation])
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.primary }}>
@@ -56,12 +83,13 @@ export function MyCourses() {
                     ) : (
                         <ContentView>
                             {
-                                data.data && 
+                                data.data &&
                                 <FlatList
-                                    keyExtractor={item => item.titulo}
-                                    data={data.data.filter((item) => item.matriculado === true).sort((a,b) => a.matriculadoEm < b.matriculadoEm ? 1 : a.matriculadoEm > b.matriculadoEm? -1 : 0)}
+                                    keyExtractor={keyExtractor}
+                                    data={filteredData}
                                     renderItem={renderItem}
-                                    initialNumToRender={1000}
+                                    initialNumToRender={10}
+                                    contentContainerStyle={{ paddingBottom: 30 }}
                                 />
                             }
                         </ContentView>

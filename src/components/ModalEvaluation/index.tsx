@@ -28,7 +28,7 @@ interface IProps {
     touchToClose: any;
 }
 
-export function ModalEvaluate({
+export function ModalEvaluation({
     visible,
     attempts,
     attemptsMade,
@@ -36,7 +36,7 @@ export function ModalEvaluate({
     touchToClose
 }: IProps) {
     const [modalVisible, setModalVisible] = useState(false);
-    const [qtdAttempts, setQtdAttempts] = useState(Number(attemptsMade));
+
     const click = true;
 
     return (
@@ -81,29 +81,40 @@ export function ModalEvaluate({
                             <InfoText>— A nota vale 10,00 pontos.</InfoText>
                         </ContentText>
                     </ContentInfo>
-                    <ContentInfo>
-                        <InfoImportant>Importante:</InfoImportant>
-                        <ContentText>
-                            <InfoText>
-                                — Você já realizou <TextBold>{attemptsMade}</TextBold> tentativa(s) desta avaliação.
-                            </InfoText>
-                        </ContentText>
-                        <ContentText>
-                            <InfoText>
-                                — Ao clicar em <TextBold>começar</TextBold>, a sua tentativa de realização estará valendo.
-                            </InfoText>
-                        </ContentText>
-                    </ContentInfo>
                     {
-                        qtdAttempts !== 0 &&
-                        <ContentButton>
-                            <Button
-                                color={theme.colors.attention}
-                                title="Começar"
-                                width={200}
-                                onPress={() => clickButton()}
-                            />
-                        </ContentButton>
+                        Number(attemptsMade) < 3 ?
+                            <>
+                                <ContentInfo>
+                                    <InfoImportant>Importante:</InfoImportant>
+                                    <ContentText>
+                                        <InfoText>
+                                            — Você já realizou <TextBold>{attemptsMade}</TextBold> tentativa(s) desta avaliação.
+                                        </InfoText>
+                                    </ContentText>
+                                    <ContentText>
+                                        <InfoText>
+                                            — Ao clicar em <TextBold>começar</TextBold>, a sua tentativa de realização estará valendo.
+                                        </InfoText>
+                                    </ContentText>
+                                </ContentInfo><ContentButton>
+                                    <Button
+                                        color={theme.colors.attention}
+                                        title="Começar"
+                                        width={200}
+                                        onPress={() => clickButton()} />
+                                </ContentButton>
+                            </>
+                            :
+                            <>
+                                <ContentInfo>
+                                    <InfoImportant>Importante:</InfoImportant>
+                                    <ContentText>
+                                        <InfoText>
+                                            — Você já realizou <TextBold>{attemptsMade}</TextBold> tentativa(s) desta avaliação.
+                                        </InfoText>
+                                    </ContentText>
+                                </ContentInfo>
+                            </>
                     }
                 </ContentView>
             </Container>

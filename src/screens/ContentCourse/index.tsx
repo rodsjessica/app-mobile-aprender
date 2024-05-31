@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { SafeAreaView, StatusBar, PermissionsAndroid, Platform, Linking, FlatList, ListRenderItemInfo } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { SafeAreaView, StatusBar, PermissionsAndroid, Platform, Linking } from "react-native";
 
 import {
     Container,
@@ -18,6 +18,11 @@ import {
 } from "./styles";
 
 import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from '@react-navigation/native';
+import FlashMessage from "react-native-flash-message";
+import { showMessage } from "react-native-flash-message";
+import RNFetchBlob from "rn-fetch-blob";
+
 import theme from "../../global/styles/theme";
 import { downloadCertificateService } from "../../services/downloadCertificateService";
 import { contentsService } from "../../services/contentsService";
@@ -27,18 +32,13 @@ import { urlFilesDB } from "../../services/filesDB";
 import { useAuth } from "../../contexts/AuthProvider";
 import { useCourseHome } from "../../contexts/CourseProvider";
 
-import FlashMessage from "react-native-flash-message";
-import { showMessage } from "react-native-flash-message";
-
-import RNFetchBlob from "rn-fetch-blob";
-
 import { HeaderNavigation } from "../../components/HeaderNavigation";
 import { CardInfoCourse } from "../../components/CardInfoCourse";
 import { SeparatorTag } from "../../components/SeparatorTag";
 import { Button } from "../../components/Button";
 import { CardContentCourse } from "../../components/CardContentCourse";
 import { Loading } from "../../components/Loading";
-import { ModalEvaluate } from "../../components/ModalEvaluate";
+import { ModalEvaluation } from "../../components/ModalEvaluation";
 import { PodCast } from "../../components/Podcast";
 import { Video } from "../../components/Video";
 import { CardCourses } from "../../components/CardCourses";
@@ -90,11 +90,15 @@ export function ContentCourse({ route }: any) {
     const [modalVisible, setModalVisible] = useState(false);
     const token: any = auth?.data.token;
 
-    const courseRecommended = data?.data.filter((item) => item.categoria === route.params?.categoria).slice(0, 3);
+    const courseRecommended: any = data?.data.filter((item) =>
+        !item.matriculado && (item.categoria === route.params?.categoria || item.categoria === 'Todos')
+    ).sort(() => Math.random() - 0.5).slice(0, 3);
 
-    const contentsFilter = dataContents?.data?.filter(item => item.tipo === "APOSTILA" || item.tipo === "MULTIMIDIA" || item.tipo === "AVALIACAO");
+    const handoutFilter = dataContents?.data?.filter(item => item.tipo === "APOSTILA");
     const videoFilter = dataContents?.data?.filter(item => item.tipo === "VIDEO");
     const podCastFilter = dataContents?.data?.filter(item => item.tipo === "PODCAST");
+    const multimediaFilter = dataContents?.data?.filter(item => item.tipo === "MULTIMIDIA");
+    const evaluationFilter = dataContents?.data?.filter(item => item.tipo === "AVALIACAO");
 
     const childToParent = (click: boolean) => {
         navigation.navigate('MyCourses');
@@ -102,35 +106,50 @@ export function ContentCourse({ route }: any) {
 
     //================================ Requisições API ===================================
 
-    const getCertificate = async () => {
-        const resp = await downloadCertificateService.getDataCertificate(token, route.params?.codigo);
-        setCertificate(resp)
+    const getCertificate = useCallback(async () => {
+        try {
+            const resp = await downloadCertificateService.getDataCertificate(token, route.params?.codigo);
+            setCertificate(resp);
 
-    }
+        } catch (error) {
+            console.error('Erro ao buscar certificado:', error);
+        }
+    }, [token, route.params?.codigo]);
 
-    const getContentCourse = async () => {
-        const resp = await contentsService.getContents(route.params?.codigo, token);
-        setDataContents(resp)
 
-    }
+    const getContentCourse = useCallback(async () => {
+        try {
+            const resp = await contentsService.getContents(route.params?.codigo, token);
+            setDataContents(resp);
 
-    const getAttemptsMade = async () => {
+        } catch (error) {
+            console.error('Erro ao buscar conteúdo do curso:', error);
+        }
+    }, [token, route.params?.codigo]);
 
-        const resp = await attemptsMadeService.getAttemptsMade(token, route.params?.codigo);
-        setDataAttemptsMade(resp.data?.tentativasRealizadas);
 
-    }
+    const getAttemptsMade = useCallback(async () => {
+        try {
+            const resp = await attemptsMadeService.getAttemptsMade(token, route.params?.codigo);
+            setDataAttemptsMade(resp.data?.tentativasRealizadas);
+
+        } catch (error) {
+            console.error('Erro ao buscar tentativas realizadas:', error);
+        }
+    }, [token, route.params?.codigo]);
 
 
     //====================================================================================
 
-    useEffect(() => {
+    useFocusEffect(
+        useCallback(() => {
 
-        getCertificate();
-        getContentCourse();
-        getAttemptsMade();
+            getCertificate();
+            getContentCourse();
+            getAttemptsMade();
 
-    }, [])
+        }, [getCertificate, getContentCourse, getAttemptsMade])
+    );
 
     //função para pedir permissão para Android e ios
     const requestStoragePermission = async () => {
@@ -153,6 +172,7 @@ export function ContentCourse({ route }: any) {
     }
 
     const downloadPDF = () => {
+
         const { dirs } = RNFetchBlob.fs;
         const data: any = certificate?.data;
         const dirToSave = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.DownloadDir;
@@ -203,8 +223,7 @@ export function ContentCourse({ route }: any) {
     }
 
     const handleHandout = async () => {
-        const apostilaFilter = contentsFilter?.filter(item => item.tipo === "APOSTILA");
-        const apostila = apostilaFilter?.map(item => item.conteudo);
+        const apostila = handoutFilter?.map(item => item.conteudo);
 
         const url = `${urlFilesDB}/${String(apostila)}.pdf`;
         const supported = await Linking.canOpenURL(url);
@@ -217,8 +236,7 @@ export function ContentCourse({ route }: any) {
     };
 
     const handleMultimedia = async () => {
-        const multimidiaFilter = contentsFilter?.filter(item => item.tipo === "MULTIMIDIA");
-        const multimidia = multimidiaFilter?.map(item => item.conteudo);
+        const multimidia = multimediaFilter?.map(item => item.conteudo);
 
         const url = `${urlFilesDB}/${String(multimidia)}`;
         const supported = await Linking.canOpenURL(url);
@@ -240,7 +258,12 @@ export function ContentCourse({ route }: any) {
     }
 
     const clickButton = () => {
-        console.log('Tela de avaliação')
+        setModalVisible(false);
+        navigation.navigate('Evaluation', {
+            titulo: route.params?.titulo,
+            codigo: route.params?.codigo
+        });
+
     }
 
     return (
@@ -285,113 +308,170 @@ export function ContentCourse({ route }: any) {
                         ainda mais os assuntos abordados.
                         {"\n"}
                         {"\n"}
+                        O curso também está disponível no aplicativo
+                        da Universidade Web Fenabrave: tudo na
+                        palma da mão.
+                        {"\n"}
+                        {"\n"}
                         Bom estudo!
                         {"\n"}
                     </Description>
                 </ContentDesc>
                 {
-                    podCastFilter &&
-                    podCastFilter.map((item) => (
-                        <PodCast
-                            key={item.titulo}
-                            titleCourse={item.titulo}
-                            contentPodcast={item.conteudo}
-                        />
-                    ))
-                }
-                <ContentViewVideo>
-                    <ContentViewInfo>
-                        <ContentImage>
-                            <IconImage source={require('../../assets/images/video.png')} />
-                        </ContentImage>
-                        <ContentVideoTitle>
-                            <Title>Vídeos</Title>
-                        </ContentVideoTitle>
-                    </ContentViewInfo>
-                    {
-                        videoFilter &&
-                        videoFilter.map((item, index) => (
-                            <Video
-                                key={index}
-                                titleCourse={item.titulo}
-                                contentVideo={item.conteudo}
-                            />
-                        ))
-                    }
-                </ContentViewVideo>
-                {
-                    modalVisible &&
-                    <ModalEvaluate
-                        visible={modalVisible}
-                        attempts={dataAttemptsMade}
-                        attemptsMade={String(dataAttemptsMade)}
-                        touchToClose={touchToClose}
-                        clickButton={clickButton}
-                    />
-                }
-                {
-                    dataContents?.data === undefined ? (
-                        <ContentView>
-                            <Loading />
-                        </ContentView>
-                    ) : (
-                        dataContents &&
-                        contentsFilter?.map((item) => (
-                            <CardContentCourse
-                                key={item.tipo}
-                                title={item.tipo === "APOSTILA" ? "E-book" : item.tipo === "MULTIMIDIA" ? "Multimídia" : "Avaliação Final"}
-                                path={item.tipo === "APOSTILA" ? require('../../assets/images/ebook.png') : item.tipo === "MULTIMIDIA" ? require('../../assets/images/multimidia.png') : require('../../assets/images/avaliacaofinal.png')}
-                                info={item.tipo === "AVALIACAO" ? "Orientações:" : "Resumo:"}
-                                infoDesc={item.descricao}
-                                titleBtn={item.tipo === "APOSTILA" ? "Apostila" : item.tipo === "MULTIMIDIA" ? "Multimídia" : "Avaliação Final"}
-                                widthBtn={200}
-                                colorBtn={item.tipo === "AVALIACAO" ? theme.colors.attention : theme.colors.success}
-                                clickButton={() => item.tipo === "APOSTILA" ? handleHandout : item.tipo === "MULTIMIDIA" ? handleMultimedia : handleEvaluation}
-                            />
-                        ))
+                    dataContents === undefined ?
+                        (
+                            <ContentView>
+                                <Loading />
+                            </ContentView>
+                        ) : (
+                            <>
+                                {
+                                    //componente replicado para atender solicitação do cliente
+                                    handoutFilter &&
+                                    handoutFilter.map((item) => (
+                                        <CardContentCourse
+                                            key={item.tipo}
+                                            title={"E-book"}
+                                            path={require('../../assets/images/ebook.png')}
+                                            widthIcon={38}
+                                            heightIcon={50}
+                                            info={"Resumo:"}
+                                            infoDesc={item.descricao}
+                                            titleBtn={"Apostila"}
+                                            widthBtn={200}
+                                            colorBtn={theme.colors.success}
+                                            clickButton={handleHandout}
+                                        />
+                                    ))
+                                }
+                                <ContentViewVideo>
+                                    <ContentViewInfo>
+                                        <ContentImage>
+                                            <IconImage source={require('../../assets/images/video.png')} />
+                                        </ContentImage>
+                                        <ContentVideoTitle>
+                                            <Title>Vídeos</Title>
+                                        </ContentVideoTitle>
+                                    </ContentViewInfo>
+                                    {
+                                        videoFilter &&
+                                        videoFilter.map((item, index) => (
+                                            <Video
+                                                key={index}
+                                                titleCourse={item.titulo}
+                                                contentVideo={item.conteudo}
+                                            />
+                                        ))
+                                    }
+                                </ContentViewVideo>
+                                {
+                                    podCastFilter &&
+                                    podCastFilter.map((item) => (
+                                        <PodCast
+                                            key={item.titulo}
+                                            titleCourse={item.titulo}
+                                            contentPodcast={item.conteudo}
+                                        />
+                                    ))
+                                }
+                                {
+                                    modalVisible &&
+                                    <ModalEvaluation
+                                        visible={modalVisible}
+                                        attempts={dataAttemptsMade}
+                                        attemptsMade={String(dataAttemptsMade)}
+                                        touchToClose={touchToClose}
+                                        clickButton={clickButton}
+                                    />
+                                }
+                                {
+                                    //componente replicado para atender solicitação do cliente
+                                    multimediaFilter &&
+                                    multimediaFilter.map((item) => (
+                                        <CardContentCourse
+                                            key={item.tipo}
+                                            title={"Multimídia"}
+                                            path={require('../../assets/images/multimidia.png')}
+                                            widthIcon={40}
+                                            heightIcon={40}
+                                            info={"Resumo:"}
+                                            infoDesc={item.descricao}
+                                            titleBtn={"Conteúdo"}
+                                            widthBtn={200}
+                                            colorBtn={theme.colors.success}
+                                            clickButton={handleMultimedia}
+                                        />
+                                    ))
+                                }
+                                {
+                                    //componente replicado para atender solicitação do cliente
+                                    evaluationFilter &&
+                                    evaluationFilter.map((item) => (
+                                        <CardContentCourse
+                                            key={item.tipo}
+                                            title={"Avaliação Final"}
+                                            path={require('../../assets/images/avaliacaofinal.png')}
+                                            widthIcon={42}
+                                            heightIcon={40}
+                                            info={"Orientações:"}
+                                            infoDesc={item.descricao}
+                                            titleBtn={"Avaliação"}
+                                            widthBtn={200}
+                                            colorBtn={theme.colors.attention}
+                                            clickButton={handleEvaluation}
+                                        />
+                                    ))
+                                }
 
-                    )
+                            </>
+                        )
                 }
                 <SeparatorTag info="Cursos Recomendados" />
                 <ContentCourseRecommended>
                     {
-                        courseRecommended?.map((item: any) => (
+                        data === undefined ? (
+                            <ContentView>
+                                <Loading />
+                            </ContentView>
+                        ) : (
+                            courseRecommended?.map((item: any) => (
 
-                            <CardCourses
-                                key={item.titulo}
-                                course={item.titulo}
-                                infoCourse={item.descricao.replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<b>", "").replaceAll("</b>", "").replace("<i>", "").replace("</i>", "").replace("<div>", "").replace("</div>", "")}
-                                image={`https://www.universidadefenabrave.com.br/EAD/FilesDB/${item.imagem}`}
-                                category={item.categoria}
-                                colorCategory={item.categoriaCor}
-                                time={item.cargaHoraria}
-                                iconName="clock-outline"
-                                info="Lançamento"
-                                clickButton={() =>
-                                    item.matriculado !== false ?
-                                        navigation.navigate('ContentCourse', {
-                                            titulo: item.titulo,
-                                            descricao: item.descricao.replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<b>", "").replaceAll("</b>", "").replace("<i>", "").replace("</i>", "").replace("<div>", "").replace("</div>", ""),
-                                            categoria: item.categoria,
-                                            cargaHoraria: item.cargaHoraria,
-                                            aprovadoEm: item.aprovadoEm,
-                                            codigo: item.codigo,
-                                            professor: item.professor
-                                        })
-                                        :
-                                        navigation.navigate('NewSolicitation', {
-                                            titulo: item.titulo,
-                                            descricao: item.descricao.replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<b>", "").replaceAll("</b>", "").replace("<i>", "").replace("</i>", "").replace("<div>", "").replace("</div>", ""),
-                                            categoria: item.categoria,
-                                            cargaHoraria: item.cargaHoraria,
-                                            aprovadoEm: item.aprovadoEm,
-                                            codigo: item.codigo,
-                                            professor: item.professor
-                                        })
-                                }
-                            />
+                                <CardCourses
+                                    key={item.titulo}
+                                    course={item.titulo}
+                                    infoCourse={item.descricao.replace(/<[^>]+>/g, "")}
+                                    image={`BASE_URL/EAD/FilesDB/${item.imagem}`}
+                                    category={item.categoria}
+                                    colorCategory={item.categoriaCor}
+                                    time={item.cargaHoraria}
+                                    iconName="clock-outline"
+                                    info="Lançamento"
+                                    clickButton={() =>
+                                        item.matriculado !== false ?
+                                            navigation.navigate('ContentCourse', {
+                                                titulo: item.titulo,
+                                                descricao: item.descricao.replace(/<[^>]+>/g, ""),
+                                                categoria: item.categoria,
+                                                cargaHoraria: item.cargaHoraria,
+                                                aprovadoEm: item.aprovadoEm,
+                                                codigo: item.codigo,
+                                                professor: item.professor
+                                            })
+                                            :
+                                            navigation.navigate('NewSolicitation', {
+                                                titulo: item.titulo,
+                                                descricao: item.descricao.replace(/<[^>]+>/g, ""),
+                                                categoria: item.categoria,
+                                                cargaHoraria: item.cargaHoraria,
+                                                aprovadoEm: item.aprovadoEm,
+                                                codigo: item.codigo,
+                                                professor: item.professor
+                                            })
+                                    }
+                                />
 
-                        ))
+                            ))
+                        )
                     }
                 </ContentCourseRecommended>
 

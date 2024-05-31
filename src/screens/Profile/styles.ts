@@ -123,4 +123,5 @@ export const ContentViewButtonUnderlined = styled.View`
 
 export const ContentView = styled.View`
     align-self: center;
+    padding: 60px;
 `;

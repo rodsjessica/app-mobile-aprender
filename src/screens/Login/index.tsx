@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Linking, SafeAreaView, StatusBar } from 'react-native';
 
 import Toast from 'react-native-toast-message';
@@ -15,7 +15,7 @@ import { Button } from "../../components/Button";
 import { useAuth } from "../../contexts/AuthProvider";
 
 export function Login() {
-    const { signIn } = useAuth()
+    const { signIn, auth } = useAuth()
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const modalizeRef = useRef<Modalize>(null);

@@ -30,6 +30,7 @@ interface IProps {
     handleShowProfile: any;
     handleShowSolicitation: any;
     letter: any;
+    logout: any;
 }
 
 export function ModalMenu({
@@ -41,8 +42,8 @@ export function ModalMenu({
     handleShowProfile,
     handleShowSolicitation,
     letter,
+    logout
 }: IProps) {
-    const { signOut } = useAuth();
     const [modalVisible, setModalVisible] = useState(false);
     const navigation = useNavigation();
     const click = true;
@@ -89,7 +90,7 @@ export function ModalMenu({
                         <Title>Solicitações</Title>
                     </ContentTitle>
                 </ContentInfo>
-                <ContentTitle onPress={() => signOut()}>
+                <ContentTitle onPress={() => logout(click)}>
                     <Title>Sair</Title>
                 </ContentTitle>
             </ModalContainer>

@@ -7,7 +7,6 @@ export interface CategoryProps {
 }
 
 export const Container = styled.View<CategoryProps>`
-    flex: 1;
     display: ${({ hidden }: any) => hidden ? 'none' : 'flex'};
     flex-direction: column;
     margin: 10px;

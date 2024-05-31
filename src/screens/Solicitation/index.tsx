@@ -18,7 +18,6 @@ import { Loading } from "../../components/Loading";
 import theme from "../../global/styles/theme";
 import { useNavigation } from "@react-navigation/native";
 
-
 import { useAuth } from "../../contexts/AuthProvider";
 import { solicitationService } from "../../services/SolicitationService";
 

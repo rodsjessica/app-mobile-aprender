@@ -16,6 +16,8 @@ import { Button } from "../Button";
 export interface IProps {
     title: string;
     path: string;
+    widthIcon: any;
+    heightIcon: any;
     info: string;
     infoDesc: string;
     colorBtn: string;
@@ -27,6 +29,8 @@ export interface IProps {
 export function CardContentCourse({
     title,
     path,
+    widthIcon,
+    heightIcon,
     info,
     infoDesc,
     colorBtn,
@@ -40,7 +44,7 @@ export function CardContentCourse({
         <Container>
             <ContentType>
                 <ContentIcon>
-                    <Icon source={path} />
+                    <Icon source={path} width={widthIcon} height={heightIcon}/>
                 </ContentIcon>
                 <ContentTitle>
                     <Title>{title}</Title>
@@ -55,7 +59,7 @@ export function CardContentCourse({
                     color={colorBtn}
                     title={titleBtn}
                     width={widthBtn}
-                    onPress={clickButton(click)}
+                    onPress={() => clickButton(click)}
                 />
             </ContentButton>
         </Container>

@@ -23,13 +23,20 @@ export const Title = styled.Text`
 `;
 
 export const ContentDesc = styled.View`
-    flex-direction: row;
+    flex-direction: column;
     margin: 5px;
 `;
 
 export const Description = styled.Text`
    font-size: 18px;
    color: ${({ theme }: any) => theme.colors.gray_dark};
+`;
+
+export const ButtonSeeMore = styled.TouchableOpacity``;
+
+export const TextSeeMore = styled.Text`
+    font-size: 18px;
+    color: ${({theme}: any) => theme.colors.blue_light};
 `;
 
 export const ContentType = styled.View`

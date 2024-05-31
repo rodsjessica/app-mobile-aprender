@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
     Container,
@@ -19,15 +19,16 @@ import { CardCourses } from "../../components/CardCourses";
 import { Loading } from "../../components/Loading";
 
 export function Home() {
-    const { auth } = useAuth();
+    const { auth, signOut, interval} = useAuth();
     const { getData, data } = useCourseHome();
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const letter = auth?.data.nome.substring(0, 1);
 
     useEffect(() => {
         getData(auth?.data.token);
+
+        interval();
 
     }, [])
 
@@ -41,7 +42,15 @@ export function Home() {
 
     // função para fechar o Modal do Menu
     const touchToClose = (click: boolean) => {
+
         setModalVisible(false)
+    }
+    // =====================================
+
+    // função para sair do app
+    const logout = (click: boolean) => {
+
+        signOut();
     }
     // =====================================
 
@@ -60,34 +69,34 @@ export function Home() {
         return (
             <CardCourses
                 course={item.titulo}
-                infoCourse={item.descricao.replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<b>", "").replaceAll("</b>", "").replace("<i>", "").replace("</i>", "").replace("<div>", "").replace("</div>", "")}
+                infoCourse={item.descricao.replace(/<[^>]+>/g, "")}
                 image={`BASE_URL/EAD/FilesDB/${item.imagem}`}
                 category={item.categoria}
                 colorCategory={item.categoriaCor}
                 time={item.cargaHoraria}
                 iconName="clock-outline"
                 info="Lançamento"
-                clickButton={ () =>
+                clickButton={() =>
                     item.matriculado !== false ?
-                    navigation.navigate('ContentCourse', {
-                        titulo: item.titulo,
-                        descricao: item.descricao.replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<b>", "").replaceAll("</b>", "").replace("<i>", "").replace("</i>", "").replace("<div>", "").replace("</div>", ""),
-                        categoria: item.categoria,
-                        cargaHoraria: item.cargaHoraria,
-                        aprovadoEm: item.aprovadoEm,
-                        codigo: item.codigo,
-                        professor: item.professor
-                    })
-                    :
-                    navigation.navigate('NewSolicitation', {
-                        titulo: item.titulo,
-                        descricao: item.descricao.replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<b>", "").replaceAll("</b>", "").replace("<i>", "").replace("</i>", "").replace("<div>", "").replace("</div>", ""),
-                        categoria: item.categoria,
-                        cargaHoraria: item.cargaHoraria,
-                        aprovadoEm: item.aprovadoEm,
-                        codigo: item.codigo,
-                        professor: item.professor
-                    })
+                        navigation.navigate('ContentCourse', {
+                            titulo: item.titulo,
+                            descricao: item.descricao.replace(/<[^>]+>/g, ""),
+                            categoria: item.categoria,
+                            cargaHoraria: item.cargaHoraria,
+                            aprovadoEm: item.aprovadoEm,
+                            codigo: item.codigo,
+                            professor: item.professor
+                        })
+                        :
+                        navigation.navigate('NewSolicitation', {
+                            titulo: item.titulo,
+                            descricao: item.descricao.replace(/<[^>]+>/g, ""),
+                            categoria: item.categoria,
+                            cargaHoraria: item.cargaHoraria,
+                            aprovadoEm: item.aprovadoEm,
+                            codigo: item.codigo,
+                            professor: item.professor
+                        })
                 }
             />
         )
@@ -108,6 +117,7 @@ export function Home() {
                         handleShowProfile={handleShowProfile}
                         handleShowSolicitation={handleShowSolicitation}
                         letter={letter}
+                        logout={logout}
                     />
                 }
                 <Header iconName={'menu'} childToParent={childToParent} />
