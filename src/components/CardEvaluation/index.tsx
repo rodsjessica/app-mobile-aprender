@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
     Container,
@@ -15,17 +15,30 @@ import theme from "../../global/styles/theme";
 
 export interface IProps {
     numberQuestion: number;
+    codeQuestion: string;
     question: string;
     alternative: string[];
+    codeAlternative: string[];
+    codEvaluation: number;
+    onValueChange: (codeQuestion: string, codeResponse: string, codEvaluation: number) => void;
 }
 
 export function CardEvaluation({
     numberQuestion,
+    codeQuestion,
     question,
     alternative,
+    codeAlternative,
+    codEvaluation,
+    onValueChange
 }: IProps) {
-    const [checked, setChecked] = React.useState('');
-    // console.log('checked =====>', checked)
+    const [checked, setChecked] = useState('');
+
+    const handleValueChange = (newValue: string) => {
+
+        setChecked(newValue);
+        onValueChange(codeQuestion, newValue, codEvaluation);
+    }
 
     return (
         <Container>
@@ -34,79 +47,33 @@ export function CardEvaluation({
                     <NumberQuestion>{numberQuestion}. </NumberQuestion>
                 </ContentNumberQuestion>
                 <ContentQuestionText>
-                    <QuestionText>{question}</QuestionText>
+                    <QuestionText key={String(codeQuestion)}>{question}</QuestionText>
                 </ContentQuestionText>
             </ContentQuestion>
             <ContentRadioButton>
-                <RadioButton.Group onValueChange={newValue => setChecked(newValue)} value={checked}>
-                    <RadioButton.Item
-                        mode="android"
-                        label={String(alternative[0])}
-                        labelStyle={{
-                            textAlign: "left",
-                            marginLeft: 5,
-                            color: theme.colors.gray_dark,
-                            fontSize: 16
-                        }}
-                        style={{
-                            flexDirection: "row",
-                            margin: 10
-                        }}
-                        position="leading"
-                        color={theme.colors.fourth}
-                        uncheckedColor={theme.colors.gray_dark}
-                        value={String(alternative[0])} />
-                    <RadioButton.Item
-                        mode="android"
-                        label={String(alternative[1])}
-                        labelStyle={{
-                            textAlign: "left",
-                            marginLeft: 5,
-                            color: theme.colors.gray_dark,
-                            fontSize: 16
-                        }}
-                        style={{
-                            flexDirection: "row",
-                            margin: 10
-                        }}
-                        position="leading"
-                        color={theme.colors.fourth}
-                        uncheckedColor={theme.colors.gray_dark}
-                        value={String(alternative[1])} />
-                    <RadioButton.Item
-                        mode="android"
-                        label={String(alternative[2])}
-                        labelStyle={{
-                            textAlign: "left",
-                            marginLeft: 5,
-                            color: theme.colors.gray_dark,
-                            fontSize: 16
-                        }}
-                        style={{
-                            flexDirection: "row",
-                            margin: 10
-                        }}
-                        position="leading"
-                        color={theme.colors.fourth}
-                        uncheckedColor={theme.colors.gray_dark}
-                        value={String(alternative[2])} />
-                    <RadioButton.Item
-                        mode="android"
-                        label={String(alternative[3])}
-                        labelStyle={{
-                            textAlign: "left",
-                            marginLeft: 5,
-                            color: theme.colors.gray_dark,
-                            fontSize: 16
-                        }}
-                        style={{
-                            flexDirection: "row",
-                            margin: 10
-                        }}
-                        position="leading"
-                        color={theme.colors.fourth}
-                        uncheckedColor={theme.colors.gray_dark}
-                        value={String(alternative[3])} />
+                <RadioButton.Group onValueChange={handleValueChange} value={checked}>
+                    {
+                        alternative.map((item, index) => (
+                            <RadioButton.Item
+                            mode="android"
+                            key={codeAlternative[index]}
+                            label={String(item)}
+                            labelStyle={{
+                                textAlign: "left",
+                                marginLeft: 5,
+                                color: theme.colors.gray_dark,
+                                fontSize: 16
+                            }}
+                            style={{
+                                flexDirection: "row",
+                                margin: 10
+                            }}
+                            position="leading"
+                            color={theme.colors.fourth}
+                            uncheckedColor={theme.colors.gray_dark}
+                            value={String(codeAlternative[index])} />
+                        ))
+                    }
                 </RadioButton.Group>
             </ContentRadioButton>
         </Container>

@@ -22,7 +22,6 @@ import {
 } from "./styles";
 
 import axios from "axios";
-import FlashMessage from "react-native-flash-message";
 import { showMessage } from "react-native-flash-message";
 import { SelectList } from 'react-native-dropdown-select-list';
 import Collapsible from 'react-native-collapsible';
@@ -151,6 +150,7 @@ export function Profile() {
             return showMessage({
                 message: "Por favor, preencha o campo vazio.",
                 type: "danger",
+                duration: 3000,
             });
         }
 
@@ -158,6 +158,7 @@ export function Profile() {
             return showMessage({
                 message: "Verifique se a senha atual é a correta!",
                 type: "danger",
+                duration: 3000,
             });
         }
 
@@ -165,6 +166,7 @@ export function Profile() {
             return showMessage({
                 message: "Campos 'Nova senha' e 'Confirmar Nova Senha' não coincidem.",
                 type: "danger",
+                duration: 3000,
             });
         }
 
@@ -172,12 +174,19 @@ export function Profile() {
             return showMessage({
                 message: "A senha precisa de pelo menos 3 caracteres.",
                 type: "danger",
+                duration: 3000,
             });
         }
 
         const resp = await changePasswordService.postChangePassword(token, newPassword)
 
-        setModalVisible(true)
+        if(resp.message === "Senha alterada com sucesso."){
+
+            setModalVisible(true)
+            setCurrentPassword("")
+            setNewPassword("")
+            setConfirmNewPassword("")
+        }
     }
 
     async function postUpdateRegister() {
@@ -187,6 +196,7 @@ export function Profile() {
             return showMessage({
                 message: "Por favor, preencha o campo vazio.",
                 type: "danger",
+                duration: 3000,
             });
         }
 
@@ -195,6 +205,7 @@ export function Profile() {
             return showMessage({
                 message: "Por favor, preencha o campo vazio.",
                 type: "danger",
+                duration: 3000,
             });
         }
 
@@ -470,7 +481,6 @@ export function Profile() {
                     </ContentViewButton>
                 </Collapsible>
             </Container>
-            <FlashMessage position="center" />
         </SafeAreaView>
     )
 

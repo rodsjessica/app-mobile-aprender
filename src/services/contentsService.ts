@@ -4,6 +4,7 @@ import api from "./config/api";
 import { IDataContents } from "../screens/ContentCourse";
 
 async function getContents(codCourse : any, token: any) :Promise<IDataContents> {
+
   const response = await  api.get<IDataContents>(`ENDPOINTS?codCurso=${codCourse}&token=${token}`)
   .then(async (response) => {
     const resp = response.data

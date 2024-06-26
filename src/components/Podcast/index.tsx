@@ -30,7 +30,7 @@ export function PodCast({ titleCourse, contentPodcast }: IProps) {
                     <IconImage source={require('../../assets/images/podcast.png')} />
                 </ContentIcon>
                 <ContentTitle>
-                    <Title>PodCast</Title>
+                    <Title>Podcast</Title>
                 </ContentTitle>
             </ContentView >
             <ContentPlayerAudio renderToHardwareTextureAndroid={true}>

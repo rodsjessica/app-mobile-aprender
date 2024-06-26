@@ -10,7 +10,6 @@ import {
 } from "./styles";
 
 import { useNavigation } from "@react-navigation/native";
-import FlashMessage from "react-native-flash-message";
 import { showMessage } from "react-native-flash-message";
 
 import { CardInfoCourse } from "../../components/CardInfoCourse";
@@ -47,6 +46,7 @@ export function NewSolicitation({ route }: any) {
             return showMessage({
                 message: "Por favor, preencha o campo vazio.",
                 type: "danger",
+                duration: 3000,
             });
         }
 
@@ -54,6 +54,7 @@ export function NewSolicitation({ route }: any) {
             return showMessage({
                 message: "É necessário ter no mínimo 20 caracteres.",
                 type: "danger",
+                duration: 3000,
             });
         }
 
@@ -67,12 +68,23 @@ export function NewSolicitation({ route }: any) {
         
         const resp = await newSolicitationService.postNewSolicitation(body);
 
-        if (resp.message === "Sucesso na requisição") {
+        if (resp.message === "Solicitação realizada") {
             setMotive('');
             
             return showMessage({
                 message: "Sua solicitação foi enviada com sucesso!",
                 type: "success",
+                duration: 3000,
+            });
+        }
+
+        if(resp.message === "Aluno contém solicitação aberta."){
+            setMotive('');
+            
+            return showMessage({
+                message: "Sua solicitação ainda está em análise!",
+                type: "danger",
+                duration: 3000,
             });
         }
 
@@ -110,7 +122,6 @@ export function NewSolicitation({ route }: any) {
                     </ContentButton>
                 </ContentView>
             </Container>
-            <FlashMessage position="center" />
         </SafeAreaView>
     )
 }

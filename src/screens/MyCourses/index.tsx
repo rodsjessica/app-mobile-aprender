@@ -1,5 +1,9 @@
 import React, { memo, useCallback, useEffect, useMemo } from "react";
-import { Container, ContentView } from "./styles";
+import {
+    Container,
+    ContentViewLoading,
+    ContentView
+} from "./styles";
 import { FlatList, ListRenderItemInfo, SafeAreaView, StatusBar } from "react-native";
 
 import { HeaderNavigation } from "../../components/HeaderNavigation";
@@ -77,9 +81,9 @@ export function MyCourses() {
             <Container>
                 {
                     data?.data === undefined ? (
-                        <ContentView>
+                        <ContentViewLoading>
                             <Loading />
-                        </ContentView>
+                        </ContentViewLoading>
                     ) : (
                         <ContentView>
                             {

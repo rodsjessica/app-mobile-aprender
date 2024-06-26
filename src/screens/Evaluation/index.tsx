@@ -13,17 +13,19 @@ import {
 } from "./styles";
 
 import { useNavigation } from "@react-navigation/native";
-import FlashMessage from "react-native-flash-message";
 import { showMessage } from "react-native-flash-message";
 
 import theme from "../../global/styles/theme";
 
 import { useAuth } from "../../contexts/AuthProvider";
 import { evaluationService } from "../../services/evaluationService";
+import { responseEvaluationService } from "../../services/responseEvaluationService";
 
 import { CardEvaluation } from "../../components/CardEvaluation";
 import { Loading } from "../../components/Loading";
 import { Button } from "../../components/Button";
+import { ModalAlert } from "../../components/ModalAlert";
+
 export interface IDataRespostas {
     ativo: boolean;
     atualizadoEm: any;
@@ -41,6 +43,7 @@ export interface IDataProps {
     atualizadoEm: any;
     atualizadoPor: any;
     codAvaliacao: number;
+    codMatAvaliacao: number;
     codigo: number;
     comentario: any;
     criadoEm: string;
@@ -57,12 +60,22 @@ export interface IDataEvaluation {
     statusCode: number;
 }
 
+export interface IDataResponseEvaluation {
+    data: string;
+    message: string;
+    statusCode: number;
+}
+
 
 export function Evaluation({ route }: any) {
     const { auth, intervalRef } = useAuth();
     const navigation = useNavigation();
 
     const [dataEvaluation, setDataEvaluation] = useState<IDataEvaluation>();
+    const [respEvaluation, setRespEvaluation] = useState<Array<{ questao: string, resposta: string, codigo: number }>>([]);
+    const [respData, setRespData] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+   
     const token: any = auth?.data.token;
 
     const getEvaluation = useCallback(async () => {
@@ -80,14 +93,50 @@ export function Evaluation({ route }: any) {
 
         clearInterval(intervalRef.current);
         intervalRef.current = null;
-     
-    }, [getEvaluation])
 
-    const submitEvaluation = () => {
-        // return showMessage({
-        //     message: "Avaliação enviada com sucesso!",
-        //     type: "success",
-        // });
+    }, [getEvaluation]);
+
+    const handleValueChange = (codeQuestion: string, codeResponse: string, codEvaluation: number) => {
+        setRespEvaluation(prevResponses => {
+            const newResponses = prevResponses
+            .filter(resp => resp.questao !== codeQuestion || resp.codigo !== codEvaluation)
+ 
+            const orderedResponse = {
+                questao: codeQuestion,
+                resposta: codeResponse,
+                codigo: codEvaluation
+            }
+            
+            return [...newResponses, orderedResponse];
+        });
+    };
+
+    const submitEvaluation = async () => {
+
+        if (respEvaluation.length === 10) {
+            const resp = await responseEvaluationService.postResponseEvaluation(respEvaluation);
+
+            if(resp.message === "Sucesso na requisição"){
+                setRespData(resp.data)
+                setModalVisible(true);
+
+            }
+
+        } else {
+            return showMessage({
+                message: "Por favor, responder todas as questões!",
+                type: "danger",
+                duration: 3000,
+            });
+        }
+
+
+
+
+    }
+
+    const touchToClose = () => {
+        setModalVisible(false);
 
         return navigation.navigate('Lançamentos');
     }
@@ -105,6 +154,13 @@ export function Evaluation({ route }: any) {
                     <Title>{route.params?.titulo}</Title>
                 </ContentTitle>
                 {
+                    modalVisible &&
+                    <ModalAlert
+                        info={`Nota da sua avaliação: ${respData}`}
+                        visible={modalVisible}
+                        touchToClose={touchToClose} />
+                }
+                {
                     dataEvaluation?.data === undefined || null ? (
                         <ContentView>
                             <Loading />
@@ -112,20 +168,23 @@ export function Evaluation({ route }: any) {
                     ) : (
                         dataEvaluation?.data?.map(
                             (item: any, index: any) => {
-
                                 const response = item.respostas;
                                 const titulo = response.map((item: any) => item.titulo);
                                 const codQuestao = response.map((item: any) => item.codQuestao);
-                                // const codigo = response.map((item: any) => item.codigo);
+                                const codigo = response.map((item: any) => item.codigo);
 
                                 if (item.codigo === codQuestao[0]) {
 
                                     return (
                                         <CardEvaluation
                                             key={item.titulo}
+                                            codEvaluation={item.codMatAvaliacao}
                                             numberQuestion={index + 1}
+                                            codeQuestion={String(item.codigo)}
                                             question={item.titulo.replace(/<[^>]+>/g, "")}
                                             alternative={titulo}
+                                            codeAlternative={codigo}
+                                            onValueChange={handleValueChange}
                                         />
                                     )
                                 }
@@ -144,7 +203,6 @@ export function Evaluation({ route }: any) {
                     />
                 </ContentButton>
             </Container>
-            <FlashMessage position="center" />
         </SafeAreaView>
     )
 }

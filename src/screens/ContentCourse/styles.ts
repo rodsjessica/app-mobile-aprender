@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 
 export const Container = styled.ScrollView`
     flex-direction: column;
-    background-color: ${({theme} : any) => theme.colors.gray_light};
+    background-color: ${({ theme }: any) => theme.colors.gray_light};
 `;
 
 export const ContentButton = styled.View`
@@ -18,7 +18,7 @@ export const ContentTitle = styled.View`
 export const Title = styled.Text`
     font-size: 20px;
     font-weight: bold;
-    color: ${({theme}: any) => theme.colors.gray_dark};
+    color: ${({ theme }: any) => theme.colors.gray_dark};
 `;
 
 export const ContentDesc = styled.View`
@@ -30,15 +30,20 @@ export const ContentDesc = styled.View`
 export const Description = styled.Text`
    font-size: 18px;
    font-weight: 400;
-   color: ${({theme}: any) => theme.colors.gray_dark};
+   color: ${({ theme }: any) => theme.colors.gray_dark};
    margin-top: 10px;
 `;
 
 export const ContentView = styled.View`
-  flex: 1;
+    flex: 1;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-top: 30px;
+    padding-bottom: 40px;
 `;
 
-export const  ContentViewVideo = styled.View`
+export const ContentViewVideo = styled.View`
     flex-direction: column;
     justify-content: flex-start;
     margin: 20px;

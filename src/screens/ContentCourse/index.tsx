@@ -19,7 +19,6 @@ import {
 
 import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from '@react-navigation/native';
-import FlashMessage from "react-native-flash-message";
 import { showMessage } from "react-native-flash-message";
 import RNFetchBlob from "rn-fetch-blob";
 
@@ -143,7 +142,7 @@ export function ContentCourse({ route }: any) {
 
     useFocusEffect(
         useCallback(() => {
-
+        
             getCertificate();
             getContentCourse();
             getAttemptsMade();
@@ -171,14 +170,19 @@ export function ContentCourse({ route }: any) {
 
     }
 
-    const downloadPDF = () => {
+    const downloadPDF = async () => {
 
         const { dirs } = RNFetchBlob.fs;
-        const data: any = certificate?.data;
+        const dataCertificate: any = certificate?.data;
         const dirToSave = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.DownloadDir;
 
         const configfb = {
             fileCache: true,
+            path: `${dirToSave}/certificado.pdf`,
+            useDownloadManager: true,
+            notification: true,
+            mediaScannable: true,
+            title: 'certificado.pdf',
             addAndroidDownloads: {
                 useDownloadManager: true,
                 notification: true,
@@ -186,40 +190,42 @@ export function ContentCourse({ route }: any) {
                 title: `certificado.pdf`,
                 path: `${dirToSave}/certificado.pdf`,
             },
-            useDownloadManager: true,
-            notification: true,
-            mediaScannable: true,
-            title: 'certificado.pdf',
-            path: `${dirToSave}/certificado.pdf`,
         };
 
-        const configOptions = Platform.select({
-            ios: configfb,
-            android: configfb,
-        });
-
-        RNFetchBlob.config(configOptions || {});
-
-        RNFetchBlob.fs.writeFile(configfb.path, data, 'base64')
-            .then(() => {
-
-                return showMessage({
+        try {
+    
+            await RNFetchBlob.fs.writeFile(configfb.path, dataCertificate, 'base64');
+    
+            const fileExists = await RNFetchBlob.fs.exists(configfb.path);
+            if (fileExists) {
+                showMessage({
                     message: "PDF salvo com sucesso!",
                     type: "success",
+                    duration: 3000,
                 });
-            })
-            .catch(() => {
+    
+                if (Platform.OS === 'ios') {
+                    RNFetchBlob.ios.previewDocument(configfb.path);
+                }
 
-                return showMessage({
-                    message: "Erro ao salvar pdf",
+            } else {
+                showMessage({
+                    message: "Erro ao salvar PDF",
                     type: "danger",
+                    duration: 3000,
                 });
-            })
 
-        if (Platform.OS === 'ios') {
-            RNFetchBlob.ios.previewDocument(configfb.path);
+            }
+
+        } catch (error) {
+            showMessage({
+                message: "Erro ao salvar PDF",
+                type: "danger",
+                duration: 3000,
+            });
+            
         }
-
+    
     }
 
     const handleHandout = async () => {
@@ -318,7 +324,7 @@ export function ContentCourse({ route }: any) {
                     </Description>
                 </ContentDesc>
                 {
-                    dataContents === undefined ?
+                    dataContents?.data === undefined || null ?
                         (
                             <ContentView>
                                 <Loading />
@@ -476,7 +482,6 @@ export function ContentCourse({ route }: any) {
                 </ContentCourseRecommended>
 
             </Container>
-            <FlashMessage position="center" />
         </SafeAreaView>
     )
 
